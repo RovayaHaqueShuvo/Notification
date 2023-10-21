@@ -1,6 +1,9 @@
 package istt.com.notification
 
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
@@ -12,22 +15,40 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        binding.button.setOnClickListener {
+
+
+        val intent = Intent(this@MainActivity,SecondActivity::class.java)
+        binding.HighBtn.setOnClickListener {
             val notification = NotificationCompat.Builder(this@MainActivity, App().Channel_ID1)
-            notification.setContentTitle(binding.editText.text.toString())
-            notification.setContentText(binding.editText2.text.toString())
+            notification.setContentTitle(binding.TitleEdTxt.text.toString())
+            notification.setContentText(binding.ContentEdTxt.text.toString())
             notification.setSmallIcon(R.drawable.up_arrow)
+
+            val pendingIntent = PendingIntent.getActivity(this,0, intent, PendingIntent.FLAG_MUTABLE)
+
+            notification.setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setColor(Color.MAGENTA)
+                .addAction(R.drawable.up_arrow,"Back",pendingIntent)
+                .addAction(R.drawable.up_arrow,"Play",pendingIntent)
+                .addAction(R.drawable.up_arrow,"Next",pendingIntent)
+                .setOnlyAlertOnce(true)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
                 .build()
+
+            intent.putExtra("Data_Passing",binding.ContentEdTxt.text.toString())
 
             val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             manager.notify(1,notification.build())
         }
 
-        binding.button1.setOnClickListener {
+        binding.LowBtn.setOnClickListener {
             val notification = NotificationCompat.Builder(this,App().Channel_ID2)
-            notification.setContentTitle(binding.editText.text.toString())
-            notification.setContentText(binding.editText2.text.toString())
-            notification.setSmallIcon(R.drawable.down_arrow).build()
+            notification.setContentTitle(binding.TitleEdTxt.text.toString())
+            notification.setContentText(binding.ContentEdTxt.text.toString())
+            notification.setSmallIcon(R.drawable.down_arrow)
+                notification.setPriority(NotificationCompat.PRIORITY_LOW).build()
 
             val namager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             namager.notify(1, notification.build())
